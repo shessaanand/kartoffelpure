@@ -3,8 +3,7 @@
 use crate::browser::TabId;
 use crate::ui::tab_layout::{TabLayoutMode, TabStripConfig};
 use gtk4::prelude::*;
-use gtk4::{Box as GtkBox, Button, CssProvider, Label, Orientation, PolicyType, ScrolledWindow};
-use gtk4::{gdk::Display, style_context_add_provider_for_display};
+use gtk4::{Box as GtkBox, Button, Label, Orientation, PolicyType, ScrolledWindow};
 use std::collections::HashMap;
 
 /// Widgets for one tab entry in the strip.
@@ -34,8 +33,6 @@ pub struct TabStrip {
 impl TabStrip {
     /// Creates an empty tab strip for `config.layout_mode`.
     pub fn new(config: TabStripConfig) -> Self {
-        Self::install_tab_css(&config);
-
         let mode = config.layout_mode;
 
         let h_tabs_box = GtkBox::new(Orientation::Horizontal, 0);
@@ -188,15 +185,17 @@ impl TabStrip {
         let mode = self.mode;
         let config = self.config;
         for id in order {
-            let Some(row) = self.entries.get(&id).map(|i| i.row.clone()) else {
+            let Some(item) = self.entries.get(&id) else {
                 continue;
             };
+            let row = item.row.clone();
+            let select = item.select.clone();
             if let Some(parent) = row.parent()
                 && let Ok(box_parent) = parent.downcast::<GtkBox>()
             {
                 box_parent.remove(&row);
             }
-            Self::apply_row_layout(mode, &config, &row);
+            Self::apply_row_layout(mode, &config, &row, &select);
             self.tabs_box_for(mode).append(&row);
         }
     }
@@ -214,6 +213,9 @@ impl TabStrip {
             .ellipsize(gtk4::pango::EllipsizeMode::End)
             .xalign(0.0)
             .build();
+        if mode == TabLayoutMode::Horizontal {
+            Self::apply_label_width_limit(&label, config);
+        }
 
         let select = Button::builder().child(&label).hexpand(true).build();
         let close = Button::builder()
@@ -225,11 +227,10 @@ impl TabStrip {
             .orientation(Orientation::Horizontal)
             .spacing(0)
             .build();
-        row.add_css_class("kp-tab-row");
         row.append(&select);
         row.append(&close);
 
-        Self::apply_row_layout(mode, config, &row);
+        Self::apply_row_layout(mode, config, &row, &select);
 
         let tab_id = id;
         select.connect_clicked(move |_| on_select(tab_id));
@@ -245,46 +246,34 @@ impl TabStrip {
         }
     }
 
-    fn apply_row_layout(mode: TabLayoutMode, config: &TabStripConfig, row: &GtkBox) {
+    fn apply_row_layout(
+        mode: TabLayoutMode,
+        config: &TabStripConfig,
+        row: &GtkBox,
+        select: &Button,
+    ) {
         match mode {
             TabLayoutMode::Horizontal => {
-                row.remove_css_class("vertical-tab");
                 row.set_hexpand(false);
                 row.set_vexpand(false);
                 row.set_size_request(config.min_tab_width, -1);
+                row.set_width_request(config.max_tab_width);
+                select.set_hexpand(true);
             }
             TabLayoutMode::Vertical => {
-                row.add_css_class("vertical-tab");
                 row.set_hexpand(true);
+                row.set_vexpand(false);
                 row.set_size_request(-1, 36);
+                row.set_width_request(-1);
+                select.set_hexpand(true);
             }
         }
     }
 
-    fn install_tab_css(config: &TabStripConfig) {
-        let css = format!(
-            "
-.kp-tab-row {{
-  min-width: {min_w}px;
-  max-width: {max_w}px;
-}}
-.kp-tab-row.vertical-tab {{
-  min-width: unset;
-  max-width: unset;
-  min-height: 32px;
-}}
-",
-            min_w = config.min_tab_width,
-            max_w = config.max_tab_width,
-        );
-        let provider = CssProvider::new();
-        provider.load_from_data(&css);
-        if let Some(display) = Display::default() {
-            style_context_add_provider_for_display(
-                &display,
-                &provider,
-                gtk4::STYLE_PROVIDER_PRIORITY_APPLICATION,
-            );
-        }
+    /// Caps label natural width so tab rows respect `max_tab_width`.
+    fn apply_label_width_limit(label: &Label, config: &TabStripConfig) {
+        let close_button_budget = 36;
+        let chars = ((config.max_tab_width - close_button_budget).max(32) / 8).clamp(8, 40);
+        label.set_width_chars(chars);
     }
 }

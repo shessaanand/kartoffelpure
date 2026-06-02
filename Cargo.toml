@@ -6,3 +6,4 @@ edition = "2024"
 [dependencies]
 gtk4 = "0.10"
 webkit6 = "0.5"
+rusqlite = { version = "0.37", features = ["bundled"] }

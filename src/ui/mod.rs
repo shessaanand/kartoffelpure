@@ -1,6 +1,7 @@
 //! GTK4 application UI.
 
 mod browser_window;
+mod history_window;
 mod tab_layout;
 mod tab_strip;
 

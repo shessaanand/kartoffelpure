@@ -1,6 +1,8 @@
 //! Main browser window: tab strip, toolbar, and stacked WebKit views.
 
 use crate::browser::{TabId, TabManager, normalize_url};
+use crate::database::history::{HistoryRepository, HistoryService};
+use crate::ui::history_window::HistoryDialog;
 use crate::ui::tab_layout::{TabLayoutMode, TabStripConfig};
 use crate::ui::tab_strip::TabStrip;
 use gtk4::gdk::{Key, ModifierType};
@@ -21,10 +23,12 @@ struct WindowState {
     stack: Stack,
     tab_strip: TabStrip,
     browser_column: GtkBox,
+    history: Rc<HistoryService>,
     address_entry: Entry,
     back_button: Button,
     forward_button: Button,
     reload_button: Button,
+    history_button: Button,
 }
 
 /// GTK application window hosting the browser shell.
@@ -44,6 +48,7 @@ impl BrowserWindow {
         let back_button = Button::with_mnemonic("_Back");
         let forward_button = Button::with_mnemonic("_Forward");
         let reload_button = Button::with_mnemonic("_Reload");
+        let history_button = Button::with_mnemonic("_History");
 
         let address_entry = Entry::builder()
             .placeholder_text("Enter URL")
@@ -61,6 +66,7 @@ impl BrowserWindow {
         toolbar.append(&back_button);
         toolbar.append(&forward_button);
         toolbar.append(&reload_button);
+        toolbar.append(&history_button);
         toolbar.append(&address_entry);
 
         let stack = Stack::builder()
@@ -84,19 +90,29 @@ impl BrowserWindow {
             .child(&chrome_root)
             .build();
 
+        let history = Rc::new(HistoryService::open_default().unwrap_or_else(|err| {
+            eprintln!("failed to open history database: {err}; using in-memory store");
+            HistoryService::from_repository(
+                HistoryRepository::open_in_memory().expect("in-memory history"),
+            )
+        }));
+
         let state = Rc::new(RefCell::new(WindowState {
             window: window.clone(),
             tab_manager: TabManager::default(),
             stack,
             tab_strip,
             browser_column,
+            history,
             address_entry,
             back_button,
             forward_button,
             reload_button,
+            history_button,
         }));
 
         Self::wire_toolbar(Rc::clone(&state));
+        Self::wire_history_button(Rc::clone(&state));
         Self::wire_keyboard_shortcuts(&window, Rc::clone(&state));
         Self::wire_new_tab_buttons(Rc::clone(&state));
 
@@ -156,6 +172,22 @@ impl BrowserWindow {
         state.borrow().tab_strip.for_each_new_tab_button(|btn| {
             let state = Rc::clone(&state_for_click);
             btn.connect_clicked(move |_| Self::open_tab(Rc::clone(&state)));
+        });
+    }
+
+    fn wire_history_button(state: Rc<RefCell<WindowState>>) {
+        let state_for_click = Rc::clone(&state);
+        let history_button = state.borrow().history_button.clone();
+        history_button.connect_clicked(move |_| {
+            let history = Rc::clone(&state_for_click.borrow().history);
+            let window = state_for_click.borrow().window.clone();
+            let navigate_state = Rc::clone(&state_for_click);
+            HistoryDialog::show(Some(&window), history, move |url| {
+                let s = navigate_state.borrow();
+                if let Some(tab) = s.tab_manager.active_tab() {
+                    tab.view().widget().load_uri(&url);
+                }
+            });
         });
     }
 
@@ -345,6 +377,7 @@ impl BrowserWindow {
     }
 
     fn on_tab_load_finished(state: &Rc<RefCell<WindowState>>, tab_id: TabId, webview: &WebView) {
+        Self::record_history(state, webview);
         if state.borrow().tab_manager.active_id() != Some(tab_id) {
             return;
         }
@@ -353,6 +386,17 @@ impl BrowserWindow {
             && !title.is_empty()
         {
             Self::set_window_title(state, &title);
+        }
+    }
+
+    fn record_history(state: &Rc<RefCell<WindowState>>, webview: &WebView) {
+        let Some(uri) = webview.uri() else {
+            return;
+        };
+        let url = uri.to_string();
+        let title = webview.title().map(|t| t.to_string());
+        if let Err(err) = state.borrow().history.record_visit(&url, title.as_deref()) {
+            eprintln!("history record failed: {err}");
         }
     }
 

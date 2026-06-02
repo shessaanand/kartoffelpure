@@ -1,6 +1,7 @@
 //! KartoffelPure browser — GTK4 + WebKitGTK shell.
 
 pub mod browser;
+pub mod database;
 pub mod ui;
 
 pub use ui::{TabLayoutMode, TabStripConfig};

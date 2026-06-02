@@ -26,16 +26,13 @@ cargo build --release
 ./target/release/kartoffelpure
 ```
 
-## v0.2.1 scope
+## v0.2.2 scope
 
-- Multiple tabs (New Tab, close, switch)
-- Per-tab WebView and session history
-- Tab layout modes: **horizontal** (top strip + horizontal scroll overflow) or **vertical** (left sidebar)
-- Configurable tab min/max width (horizontal); sidebar width (vertical)
-- Toolbar: address bar, Back, Forward, Reload (active tab only)
-- Default page per new tab: https://example.com
-- Shortcuts: Ctrl+T (new tab), Ctrl+W (close tab)
-- No bookmarks, persisted history, downloads, settings UI, sync, or extensions
+- Everything in v0.2.1 (tabs, overflow, layout modes)
+- **Persistent browsing history** (SQLite at `~/.local/share/kartoffelpure/kartoffelpure.db`)
+- History dialog (toolbar **History** button): search, open in active tab, delete entry, clear all
+- History recorded on successful page load completion only
+- No bookmarks, downloads, settings UI, sync, or extensions
 
 ### Tab layout API
 

@@ -26,13 +26,13 @@ cargo build --release
 ./target/release/kartoffelpure
 ```
 
-## v0.2.2 scope
+## v0.2.3 scope
 
-- Everything in v0.2.1 (tabs, overflow, layout modes)
-- **Persistent browsing history** (SQLite at `~/.local/share/kartoffelpure/kartoffelpure.db`)
-- History dialog (toolbar **History** button): search, open in active tab, delete entry, clear all
-- History recorded on successful page load completion only
-- No bookmarks, downloads, settings UI, sync, or extensions
+- Everything in v0.2.2 (tabs + persistent history)
+- **Persistent bookmarks** in the same SQLite database
+- Toolbar **Bookmark** button (save active page, duplicate-safe)
+- Toolbar **Bookmarks** manager dialog: search, open in active tab, delete, clear all
+- No folders/sync/import-export/downloads/settings/privacy/extensions
 
 ### Tab layout API
 

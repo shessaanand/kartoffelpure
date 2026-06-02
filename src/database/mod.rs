@@ -2,6 +2,7 @@
 
 mod path;
 
+pub mod bookmark;
 pub mod history;
 
 pub use path::default_database_path;
@@ -42,6 +43,14 @@ fn init_schema(conn: &Connection) -> SqlResult<()> {
         );
         CREATE INDEX IF NOT EXISTS idx_history_visited_at ON history(visited_at DESC);
         CREATE INDEX IF NOT EXISTS idx_history_url ON history(url);
+        CREATE TABLE IF NOT EXISTS bookmarks (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            title TEXT NOT NULL,
+            url TEXT NOT NULL UNIQUE,
+            created_at INTEGER NOT NULL
+        );
+        CREATE INDEX IF NOT EXISTS idx_bookmarks_created_at ON bookmarks(created_at DESC);
+        CREATE INDEX IF NOT EXISTS idx_bookmarks_title ON bookmarks(title);
         ",
     )
 }

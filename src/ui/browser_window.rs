@@ -1,7 +1,10 @@
 //! Main browser window: tab strip, toolbar, and stacked WebKit views.
 
 use crate::browser::{TabId, TabManager, normalize_url};
+use crate::database::bookmark::repository::BookmarkRepository;
+use crate::database::bookmark::service::{AddBookmarkResult, BookmarkService};
 use crate::database::history::{HistoryRepository, HistoryService};
+use crate::ui::bookmark_window::BookmarkDialog;
 use crate::ui::history_window::HistoryDialog;
 use crate::ui::tab_layout::{TabLayoutMode, TabStripConfig};
 use crate::ui::tab_strip::TabStrip;
@@ -23,11 +26,14 @@ struct WindowState {
     stack: Stack,
     tab_strip: TabStrip,
     browser_column: GtkBox,
+    bookmarks: Rc<BookmarkService>,
     history: Rc<HistoryService>,
     address_entry: Entry,
     back_button: Button,
     forward_button: Button,
     reload_button: Button,
+    bookmark_button: Button,
+    bookmarks_button: Button,
     history_button: Button,
 }
 
@@ -48,6 +54,8 @@ impl BrowserWindow {
         let back_button = Button::with_mnemonic("_Back");
         let forward_button = Button::with_mnemonic("_Forward");
         let reload_button = Button::with_mnemonic("_Reload");
+        let bookmark_button = Button::with_mnemonic("_Bookmark");
+        let bookmarks_button = Button::with_mnemonic("Bookmar_ks");
         let history_button = Button::with_mnemonic("_History");
 
         let address_entry = Entry::builder()
@@ -66,6 +74,8 @@ impl BrowserWindow {
         toolbar.append(&back_button);
         toolbar.append(&forward_button);
         toolbar.append(&reload_button);
+        toolbar.append(&bookmark_button);
+        toolbar.append(&bookmarks_button);
         toolbar.append(&history_button);
         toolbar.append(&address_entry);
 
@@ -96,6 +106,12 @@ impl BrowserWindow {
                 HistoryRepository::open_in_memory().expect("in-memory history"),
             )
         }));
+        let bookmarks = Rc::new(BookmarkService::open_default().unwrap_or_else(|err| {
+            eprintln!("failed to open bookmark database: {err}; using in-memory store");
+            BookmarkService::from_repository(
+                BookmarkRepository::open_in_memory().expect("in-memory bookmarks"),
+            )
+        }));
 
         let state = Rc::new(RefCell::new(WindowState {
             window: window.clone(),
@@ -103,15 +119,20 @@ impl BrowserWindow {
             stack,
             tab_strip,
             browser_column,
+            bookmarks,
             history,
             address_entry,
             back_button,
             forward_button,
             reload_button,
+            bookmark_button,
+            bookmarks_button,
             history_button,
         }));
 
         Self::wire_toolbar(Rc::clone(&state));
+        Self::wire_bookmark_button(Rc::clone(&state));
+        Self::wire_bookmarks_button(Rc::clone(&state));
         Self::wire_history_button(Rc::clone(&state));
         Self::wire_keyboard_shortcuts(&window, Rc::clone(&state));
         Self::wire_new_tab_buttons(Rc::clone(&state));
@@ -186,6 +207,60 @@ impl BrowserWindow {
                 let s = navigate_state.borrow();
                 if let Some(tab) = s.tab_manager.active_tab() {
                     tab.view().widget().load_uri(&url);
+                }
+            });
+        });
+    }
+
+    fn wire_bookmark_button(state: Rc<RefCell<WindowState>>) {
+        let state_for_click = Rc::clone(&state);
+        let bookmark_button = state.borrow().bookmark_button.clone();
+        bookmark_button.connect_clicked(move |_| {
+            let (title, url, bookmarks) = {
+                let s = state_for_click.borrow();
+                let Some(tab) = s.tab_manager.active_tab() else {
+                    return;
+                };
+                let webview = tab.view().widget();
+                let Some(uri) = webview.uri() else {
+                    eprintln!("bookmark skipped: active tab has no URL");
+                    return;
+                };
+                (
+                    webview.title().map(|t| t.to_string()),
+                    normalize_url(&uri),
+                    Rc::clone(&s.bookmarks),
+                )
+            };
+
+            match bookmarks.add_bookmark(title.as_deref(), &url) {
+                Ok(AddBookmarkResult::Added(_)) => {
+                    eprintln!("bookmark saved: {url}");
+                }
+                Ok(AddBookmarkResult::Duplicate) => {
+                    eprintln!("bookmark already exists: {url}");
+                }
+                Ok(AddBookmarkResult::InvalidUrl) => {
+                    eprintln!("bookmark skipped: invalid URL");
+                }
+                Err(err) => {
+                    eprintln!("bookmark save failed: {err}");
+                }
+            }
+        });
+    }
+
+    fn wire_bookmarks_button(state: Rc<RefCell<WindowState>>) {
+        let state_for_click = Rc::clone(&state);
+        let bookmarks_button = state.borrow().bookmarks_button.clone();
+        bookmarks_button.connect_clicked(move |_| {
+            let bookmarks = Rc::clone(&state_for_click.borrow().bookmarks);
+            let window = state_for_click.borrow().window.clone();
+            let navigate_state = Rc::clone(&state_for_click);
+            BookmarkDialog::show(Some(&window), bookmarks, move |url| {
+                let s = navigate_state.borrow();
+                if let Some(tab) = s.tab_manager.active_tab() {
+                    tab.view().widget().load_uri(&normalize_url(&url));
                 }
             });
         });

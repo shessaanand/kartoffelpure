@@ -1,7 +1,9 @@
-//! KartoffelPure browser — v0.1 single-view shell.
+//! KartoffelPure browser — GTK4 + WebKitGTK shell.
 
 pub mod browser;
 pub mod ui;
+
+pub use ui::{TabLayoutMode, TabStripConfig};
 
 use gtk4::prelude::*;
 use gtk4::{Application, gio::ApplicationFlags};

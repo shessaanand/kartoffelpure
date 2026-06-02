@@ -1,22 +1,46 @@
-//! Main browser window: toolbar plus WebKit view.
+//! Main browser window: tab strip, toolbar, and stacked WebKit views.
 
-use crate::browser::{BrowserView, normalize_url};
+use crate::browser::{TabId, TabManager, normalize_url};
+use crate::ui::tab_layout::{TabLayoutMode, TabStripConfig};
+use crate::ui::tab_strip::TabStrip;
+use gtk4::gdk::{Key, ModifierType};
 use gtk4::prelude::*;
-use gtk4::{Application, ApplicationWindow, Box as GtkBox, Button, Entry, Orientation};
+use gtk4::{
+    Application, ApplicationWindow, Box as GtkBox, Button, Entry, EventControllerKey, Orientation,
+    Stack, StackTransitionType,
+};
+use std::cell::RefCell;
+use std::rc::Rc;
 use webkit6::prelude::*;
 use webkit6::{LoadEvent, WebView};
 
-/// GTK application window hosting the v0.1 browser shell.
+/// Shared window state used by GTK signal handlers.
+struct WindowState {
+    window: ApplicationWindow,
+    tab_manager: TabManager,
+    stack: Stack,
+    tab_strip: TabStrip,
+    browser_column: GtkBox,
+    address_entry: Entry,
+    back_button: Button,
+    forward_button: Button,
+    reload_button: Button,
+}
+
+/// GTK application window hosting the browser shell.
 pub struct BrowserWindow {
     window: ApplicationWindow,
+    state: Rc<RefCell<WindowState>>,
 }
 
 impl BrowserWindow {
-    /// Builds the window, toolbar, and web view for `app`.
+    /// Builds the window with default horizontal tab layout.
     pub fn new(app: &Application) -> Self {
-        let browser = BrowserView::new();
-        let webview = browser.widget().clone();
+        Self::with_tab_config(app, TabStripConfig::default())
+    }
 
+    /// Builds the window using the given tab strip configuration.
+    pub fn with_tab_config(app: &Application, tab_config: TabStripConfig) -> Self {
         let back_button = Button::with_mnemonic("_Back");
         let forward_button = Button::with_mnemonic("_Forward");
         let reload_button = Button::with_mnemonic("_Reload");
@@ -39,95 +63,249 @@ impl BrowserWindow {
         toolbar.append(&reload_button);
         toolbar.append(&address_entry);
 
-        let content = GtkBox::new(Orientation::Vertical, 0);
-        content.append(&toolbar);
-        content.append(browser.widget());
+        let stack = Stack::builder()
+            .vexpand(true)
+            .hexpand(true)
+            .transition_type(StackTransitionType::None)
+            .build();
+
+        let browser_column = GtkBox::new(Orientation::Vertical, 0);
+        browser_column.append(&toolbar);
+        browser_column.append(&stack);
+
+        let tab_strip = TabStrip::new(tab_config);
+        let chrome_root = Self::build_chrome_root(&tab_strip, &browser_column);
 
         let window = ApplicationWindow::builder()
             .application(app)
             .title("KartoffelPure")
             .default_width(1200)
             .default_height(800)
-            .child(&content)
+            .child(&chrome_root)
             .build();
 
-        let update_navigation_buttons =
-            |webview: &WebView, back: &Button, forward: &Button| {
-                back.set_sensitive(webview.can_go_back());
-                forward.set_sensitive(webview.can_go_forward());
-            };
+        let state = Rc::new(RefCell::new(WindowState {
+            window: window.clone(),
+            tab_manager: TabManager::default(),
+            stack,
+            tab_strip,
+            browser_column,
+            address_entry,
+            back_button,
+            forward_button,
+            reload_button,
+        }));
 
-        let sync_address_bar = |webview: &WebView, entry: &Entry| {
-            if entry.has_focus() {
-                return;
+        Self::wire_toolbar(Rc::clone(&state));
+        Self::wire_keyboard_shortcuts(&window, Rc::clone(&state));
+        Self::wire_new_tab_buttons(Rc::clone(&state));
+
+        Self::open_tab(Rc::clone(&state));
+
+        Self { window, state }
+    }
+
+    /// Shows the window.
+    pub fn present(&self) {
+        self.window.present();
+    }
+
+    /// Switches tab presentation between horizontal and vertical layouts.
+    pub fn set_tab_layout_mode(&self, mode: TabLayoutMode) {
+        let mut s = self.state.borrow_mut();
+        s.tab_strip.set_layout_mode(mode);
+        Self::rebuild_chrome_layout(&mut s);
+    }
+
+    /// Returns the current tab layout mode.
+    pub fn tab_layout_mode(&self) -> TabLayoutMode {
+        self.state.borrow().tab_strip.layout_mode()
+    }
+
+    fn build_chrome_root(tab_strip: &TabStrip, browser_column: &GtkBox) -> GtkBox {
+        match tab_strip.layout_mode() {
+            TabLayoutMode::Horizontal => {
+                let root = GtkBox::new(Orientation::Vertical, 0);
+                root.append(tab_strip.horizontal_strip());
+                root.append(browser_column);
+                root
             }
-            if let Some(uri) = webview.uri() {
-                entry.set_text(&uri);
+            TabLayoutMode::Vertical => {
+                let root = GtkBox::new(Orientation::Horizontal, 0);
+                root.append(tab_strip.vertical_sidebar());
+                browser_column.set_hexpand(true);
+                browser_column.set_vexpand(true);
+                root.append(browser_column);
+                root
             }
-        };
+        }
+    }
 
-        // Initial toolbar state and address bar text.
-        update_navigation_buttons(&webview, &back_button, &forward_button);
-        address_entry.set_text(crate::browser::DEFAULT_HOME_URL);
-
-        // --- Navigation buttons ---
+    fn rebuild_chrome_layout(state: &mut WindowState) {
+        if let Some(parent) = state.browser_column.parent()
+            && let Ok(box_parent) = parent.downcast::<GtkBox>()
         {
-            let webview = webview.clone();
-            let back = back_button.clone();
-            let forward = forward_button.clone();
+            box_parent.remove(&state.browser_column);
+        }
+        let chrome_root = Self::build_chrome_root(&state.tab_strip, &state.browser_column);
+        state.window.set_child(Some(&chrome_root));
+    }
+
+    fn wire_new_tab_buttons(state: Rc<RefCell<WindowState>>) {
+        let state_for_click = Rc::clone(&state);
+        state.borrow().tab_strip.for_each_new_tab_button(|btn| {
+            let state = Rc::clone(&state_for_click);
+            btn.connect_clicked(move |_| Self::open_tab(Rc::clone(&state)));
+        });
+    }
+
+    fn wire_toolbar(state: Rc<RefCell<WindowState>>) {
+        {
+            let state = Rc::clone(&state);
+            let back_button = state.borrow().back_button.clone();
             back_button.connect_clicked(move |_| {
-                if webview.can_go_back() {
-                    webview.go_back();
+                let webview = {
+                    let s = state.borrow();
+                    s.tab_manager
+                        .active_tab()
+                        .map(|t| t.view().widget().clone())
+                };
+                if let Some(webview) = webview {
+                    if webview.can_go_back() {
+                        webview.go_back();
+                    }
+                    Self::sync_chrome(&state);
                 }
-                update_navigation_buttons(&webview, &back, &forward);
             });
         }
 
         {
-            let webview = webview.clone();
-            let back = back_button.clone();
-            let forward = forward_button.clone();
+            let state = Rc::clone(&state);
+            let forward_button = state.borrow().forward_button.clone();
             forward_button.connect_clicked(move |_| {
-                if webview.can_go_forward() {
-                    webview.go_forward();
+                let webview = {
+                    let s = state.borrow();
+                    s.tab_manager
+                        .active_tab()
+                        .map(|t| t.view().widget().clone())
+                };
+                if let Some(webview) = webview {
+                    if webview.can_go_forward() {
+                        webview.go_forward();
+                    }
+                    Self::sync_chrome(&state);
                 }
-                update_navigation_buttons(&webview, &back, &forward);
             });
         }
 
         {
-            let webview = webview.clone();
+            let state = Rc::clone(&state);
+            let reload_button = state.borrow().reload_button.clone();
             reload_button.connect_clicked(move |_| {
-                webview.reload();
+                let s = state.borrow();
+                if let Some(tab) = s.tab_manager.active_tab() {
+                    tab.view().widget().reload();
+                }
             });
         }
 
-        // --- Address bar ---
         {
-            let webview = webview.clone();
+            let state = Rc::clone(&state);
+            let address_entry = state.borrow().address_entry.clone();
             address_entry.connect_activate(move |entry| {
                 let url = normalize_url(&entry.text());
-                webview.load_uri(&url);
-                entry.set_text(&url);
+                let s = state.borrow();
+                if let Some(tab) = s.tab_manager.active_tab() {
+                    tab.view().widget().load_uri(&url);
+                    entry.set_text(&url);
+                }
             });
         }
+    }
 
-        // --- WebView signals ---
+    fn wire_keyboard_shortcuts(window: &ApplicationWindow, state: Rc<RefCell<WindowState>>) {
+        let controller = EventControllerKey::new();
+        controller.connect_key_pressed(move |_, key, _, modifiers| {
+            let ctrl = modifiers.contains(ModifierType::CONTROL_MASK);
+            if ctrl && key == Key::t {
+                Self::open_tab(Rc::clone(&state));
+                return gtk4::glib::Propagation::Stop;
+            }
+            if ctrl && key == Key::w {
+                if let Some(id) = state.borrow().tab_manager.active_id() {
+                    Self::close_tab(Rc::clone(&state), id);
+                }
+                return gtk4::glib::Propagation::Stop;
+            }
+            gtk4::glib::Propagation::Proceed
+        });
+        window.add_controller(controller);
+    }
+
+    fn open_tab(state: Rc<RefCell<WindowState>>) {
+        let tab_id = {
+            let mut s = state.borrow_mut();
+            let tab_id = s.tab_manager.create_tab();
+            let tab = s.tab_manager.tab(tab_id).expect("tab created");
+            let name = tab.stack_child_name();
+            s.stack.add_named(tab.view().widget(), Some(&name));
+            tab_id
+        };
+
+        Self::register_tab_ui(Rc::clone(&state), tab_id);
+        Self::switch_tab(Rc::clone(&state), tab_id);
+    }
+
+    fn register_tab_ui(state: Rc<RefCell<WindowState>>, tab_id: TabId) {
+        let title = state
+            .borrow()
+            .tab_manager
+            .tab(tab_id)
+            .map(|t| t.title().to_string())
+            .unwrap_or_else(|| String::from("New Tab"));
+
+        let select_state = Rc::clone(&state);
+        let close_state = Rc::clone(&state);
+
+        state.borrow_mut().tab_strip.add_tab(
+            tab_id,
+            &title,
+            move |id| Self::switch_tab(Rc::clone(&select_state), id),
+            move |id| Self::close_tab(Rc::clone(&close_state), id),
+        );
+
+        Self::wire_tab_webview_signals(Rc::clone(&state), tab_id);
+    }
+
+    fn wire_tab_webview_signals(state: Rc<RefCell<WindowState>>, tab_id: TabId) {
+        let webview = state
+            .borrow()
+            .tab_manager
+            .tab(tab_id)
+            .expect("tab exists")
+            .view()
+            .widget()
+            .clone();
+
         {
-            let entry = address_entry.clone();
+            let state = Rc::clone(&state);
             webview.connect_uri_notify(move |wv| {
-                sync_address_bar(wv, &entry);
+                Self::on_tab_uri_changed(&state, tab_id, wv);
             });
         }
 
         {
-            let entry = address_entry.clone();
-            let back = back_button.clone();
-            let forward = forward_button.clone();
+            let state = Rc::clone(&state);
+            webview.connect_title_notify(move |wv| {
+                Self::on_tab_title_changed(&state, tab_id, wv);
+            });
+        }
+
+        {
+            let state = Rc::clone(&state);
             webview.connect_load_changed(move |wv, event| {
                 if event == LoadEvent::Finished {
-                    sync_address_bar(wv, &entry);
-                    update_navigation_buttons(wv, &back, &forward);
+                    Self::on_tab_load_finished(&state, tab_id, wv);
                 }
             });
         }
@@ -136,14 +314,124 @@ impl BrowserWindow {
             eprintln!("load failed for {failing_uri}: {error}");
             false
         });
-
-        browser.load_home();
-
-        Self { window }
     }
 
-    /// Shows the window.
-    pub fn present(&self) {
-        self.window.present();
+    fn on_tab_uri_changed(state: &Rc<RefCell<WindowState>>, tab_id: TabId, webview: &WebView) {
+        if state.borrow().tab_manager.active_id() != Some(tab_id) {
+            return;
+        }
+        let entry = state.borrow().address_entry.clone();
+        Self::sync_address_bar(webview, &entry);
+    }
+
+    fn on_tab_title_changed(state: &Rc<RefCell<WindowState>>, tab_id: TabId, webview: &WebView) {
+        let title = webview
+            .title()
+            .map(|t| t.to_string())
+            .filter(|t| !t.is_empty())
+            .unwrap_or_else(|| String::from("New Tab"));
+
+        {
+            let mut s = state.borrow_mut();
+            if let Some(tab) = s.tab_manager.tab_mut(tab_id) {
+                tab.set_title(title.clone());
+            }
+            s.tab_strip.set_tab_title(tab_id, &title);
+        }
+
+        if state.borrow().tab_manager.active_id() == Some(tab_id) {
+            Self::set_window_title(state, &title);
+        }
+    }
+
+    fn on_tab_load_finished(state: &Rc<RefCell<WindowState>>, tab_id: TabId, webview: &WebView) {
+        if state.borrow().tab_manager.active_id() != Some(tab_id) {
+            return;
+        }
+        Self::sync_chrome(state);
+        if let Some(title) = webview.title().map(|t| t.to_string())
+            && !title.is_empty()
+        {
+            Self::set_window_title(state, &title);
+        }
+    }
+
+    fn switch_tab(state: Rc<RefCell<WindowState>>, tab_id: TabId) {
+        {
+            let mut s = state.borrow_mut();
+            if !s.tab_manager.set_active(tab_id) {
+                return;
+            }
+            let name = s
+                .tab_manager
+                .tab(tab_id)
+                .expect("active tab")
+                .stack_child_name();
+            s.stack.set_visible_child_name(&name);
+        }
+
+        Self::highlight_active_tab(&state, tab_id);
+        Self::sync_chrome(&state);
+    }
+
+    fn close_tab(state: Rc<RefCell<WindowState>>, tab_id: TabId) {
+        let new_active = {
+            let mut s = state.borrow_mut();
+            let Some(tab) = s.tab_manager.tab(tab_id) else {
+                return;
+            };
+            let stack_name = tab.stack_child_name();
+            let Some(new_active) = s.tab_manager.close_tab(tab_id) else {
+                return;
+            };
+            s.tab_strip.remove_tab(tab_id);
+            if let Some(child) = s.stack.child_by_name(&stack_name) {
+                s.stack.remove(&child);
+            }
+            new_active
+        };
+
+        Self::switch_tab(state, new_active);
+    }
+
+    fn sync_chrome(state: &Rc<RefCell<WindowState>>) {
+        let s = state.borrow();
+        let Some(tab) = s.tab_manager.active_tab() else {
+            return;
+        };
+        let webview = tab.view().widget();
+        Self::update_navigation_buttons(webview, &s.back_button, &s.forward_button);
+        Self::sync_address_bar(webview, &s.address_entry);
+        s.tab_strip.set_tab_title(tab.id(), tab.title());
+        let title = tab.title().to_string();
+        drop(s);
+        Self::set_window_title(state, &title);
+    }
+
+    fn highlight_active_tab(state: &Rc<RefCell<WindowState>>, tab_id: TabId) {
+        state.borrow().tab_strip.set_active_tab(tab_id);
+    }
+
+    fn set_window_title(state: &Rc<RefCell<WindowState>>, page_title: &str) {
+        let title = if page_title.is_empty() {
+            String::from("KartoffelPure")
+        } else {
+            format!("{page_title} — KartoffelPure")
+        };
+        state.borrow().window.set_title(Some(title.as_str()));
+    }
+
+    fn update_navigation_buttons(webview: &WebView, back: &Button, forward: &Button) {
+        back.set_sensitive(webview.can_go_back());
+        forward.set_sensitive(webview.can_go_forward());
+    }
+
+    fn sync_address_bar(webview: &WebView, entry: &Entry) {
+        if entry.has_focus() {
+            return;
+        }
+        if let Some(uri) = webview.uri() {
+            entry.set_text(&uri);
+        }
     }
 }

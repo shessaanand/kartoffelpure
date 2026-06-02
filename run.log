@@ -1,0 +1,230 @@
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.36s
+     Running `target/debug/kartoffelpure`
+(kartoffelpure:25525): GLib-GIO-DEBUG: 09:12:46.862: Using cross-namespace EXTERNAL authentication (this will deadlock if server is GDBus < 2.73.3)
+(kartoffelpure:25525): GLib-GIO-DEBUG: 09:12:46.873: _g_io_module_get_default: Found default implementation dconf (DConfSettingsBackend) for ‘gsettings-backend’
+(kartoffelpure:25525): dconf-DEBUG: 09:12:46.873: watch_fast: "/org/gnome/desktop/interface/" (establishing: 0, active: 0)
+(kartoffelpure:25525): dconf-DEBUG: 09:12:46.874: watch_fast: "/org/gnome/desktop/peripherals/mouse/" (establishing: 0, active: 0)
+(kartoffelpure:25525): dconf-DEBUG: 09:12:46.874: watch_fast: "/org/gnome/desktop/sound/" (establishing: 0, active: 0)
+(kartoffelpure:25525): dconf-DEBUG: 09:12:46.874: watch_fast: "/org/gnome/desktop/privacy/" (establishing: 0, active: 0)
+(kartoffelpure:25525): dconf-DEBUG: 09:12:46.874: watch_fast: "/org/gnome/desktop/wm/preferences/" (establishing: 0, active: 0)
+(kartoffelpure:25525): dconf-DEBUG: 09:12:46.874: watch_fast: "/org/gnome/settings-daemon/plugins/xsettings/" (establishing: 0, active: 0)
+(kartoffelpure:25525): dconf-DEBUG: 09:12:46.874: watch_fast: "/org/gnome/desktop/a11y/" (establishing: 0, active: 0)
+(kartoffelpure:25525): dconf-DEBUG: 09:12:46.874: watch_fast: "/org/gnome/desktop/a11y/interface/" (establishing: 0, active: 0)
+(kartoffelpure:25525): dconf-DEBUG: 09:12:46.875: watch_established: "/org/gnome/desktop/interface/" (establishing: 1)
+(kartoffelpure:25525): dconf-DEBUG: 09:12:46.875: watch_established: "/org/gnome/desktop/peripherals/mouse/" (establishing: 1)
+(kartoffelpure:25525): dconf-DEBUG: 09:12:46.875: watch_established: "/org/gnome/desktop/sound/" (establishing: 1)
+(kartoffelpure:25525): dconf-DEBUG: 09:12:46.875: watch_established: "/org/gnome/desktop/privacy/" (establishing: 1)
+(kartoffelpure:25525): dconf-DEBUG: 09:12:46.875: watch_established: "/org/gnome/desktop/wm/preferences/" (establishing: 1)
+(kartoffelpure:25525): dconf-DEBUG: 09:12:46.875: watch_established: "/org/gnome/settings-daemon/plugins/xsettings/" (establishing: 1)
+(kartoffelpure:25525): dconf-DEBUG: 09:12:46.876: watch_established: "/org/gnome/desktop/a11y/" (establishing: 1)
+(kartoffelpure:25525): dconf-DEBUG: 09:12:46.876: watch_established: "/org/gnome/desktop/a11y/interface/" (establishing: 1)
+(kartoffelpure:25525): Gtk-DEBUG: 09:12:46.886: Connecting to session manager
+(kartoffelpure:25525): GLib-GIO-DEBUG: 09:12:46.895: _g_io_module_get_default: Found default implementation gvfs (GDaemonVfs) for ‘gio-vfs’
+(kartoffelpure:25525): GLib-GIO-DEBUG: 09:12:47.081: Using cross-namespace EXTERNAL authentication (this will deadlock if server is GDBus < 2.73.3)
+(process:25554): GLib-GIO-DEBUG: 09:12:47.105: Failed to initialize portal (GNetworkMonitorPortal) for gio-network-monitor: Not using portals
+(process:25554): GLib-GIO-DEBUG: 09:12:47.107: Using cross-namespace EXTERNAL authentication (this will deadlock if server is GDBus < 2.73.3)
+(process:25554): GLib-GIO-DEBUG: 09:12:47.112: _g_io_module_get_default: Found default implementation networkmanager (GNetworkMonitorNM) for ?gio-network-monitor?
+(process:25554): GLib-GIO-DEBUG: 09:12:47.116: Failed to initialize portal (GPowerProfileMonitorPortal) for gio-power-profile-monitor: Not using portals
+(process:25554): GLib-GIO-DEBUG: 09:12:47.116: _g_io_module_get_default: Found default implementation dbus (GPowerProfileMonitorDBus) for ?gio-power-profile-monitor?
+(kartoffelpure:25525): Gtk-DEBUG: 09:12:47.116: snapshot symbolic icon using mask
+(kartoffelpure:25525): Gtk-DEBUG: 09:12:47.116: snapshot symbolic icon using mask
+(kartoffelpure:25525): Gtk-DEBUG: 09:12:47.116: snapshot symbolic icon using mask
+(process:25554): GLib-GIO-DEBUG: 09:12:47.119: Using cross-namespace EXTERNAL authentication (this will deadlock if server is GDBus < 2.73.3)
+(process:25554): GLib-GIO-DEBUG: 09:12:47.124: _g_io_module_get_default: Found default implementation gvfs (GDaemonVfs) for ?gio-vfs?
+(process:25554): GLib-GIO-DEBUG: 09:12:47.144: _g_io_module_get_default: Found default implementation dconf (DConfSettingsBackend) for ?gsettings-backend?
+(process:25554): dconf-DEBUG: 09:12:47.144: watch_fast: "/system/proxy/" (establishing: 0, active: 0)
+(process:25554): dconf-DEBUG: 09:12:47.144: watch_fast: "/system/proxy/http/" (establishing: 0, active: 0)
+(process:25554): dconf-DEBUG: 09:12:47.144: watch_fast: "/system/proxy/https/" (establishing: 0, active: 0)
+(process:25554): dconf-DEBUG: 09:12:47.144: watch_fast: "/system/proxy/ftp/" (establishing: 0, active: 0)
+(process:25554): dconf-DEBUG: 09:12:47.145: watch_fast: "/system/proxy/socks/" (establishing: 0, active: 0)
+(process:25554): GLib-GIO-DEBUG: 09:12:47.145: _g_io_module_get_default: Found default implementation gnome (GProxyResolverGnome) for ?gio-proxy-resolver?
+(process:25554): GLib-GIO-DEBUG: 09:12:47.145: g_socket_client_connect_async: starting new g_socket_client_connect_async() with GTask 0x585d1b89c7d0 and GSocketClientAsyncConnectData 0x585d1b88ed50
+(process:25554): GLib-GIO-DEBUG: 09:12:47.145: GSocketClient: Starting new address enumeration
+(process:25554): GLib-GIO-DEBUG: 09:12:47.145: lookup_by_name_with_flags_async: starting new lookup for example.com with GTask 0x585d1b898070, LookupData 0x585d1b89cb00
+(process:25554): dconf-DEBUG: 09:12:47.145: watch_established: "/system/proxy/" (establishing: 1)
+(process:25554): dconf-DEBUG: 09:12:47.145: watch_established: "/system/proxy/http/" (establishing: 1)
+(process:25554): dconf-DEBUG: 09:12:47.145: watch_established: "/system/proxy/https/" (establishing: 1)
+(process:25554): dconf-DEBUG: 09:12:47.146: watch_established: "/system/proxy/ftp/" (establishing: 1)
+(process:25554): GLib-GIO-DEBUG: 09:12:47.146: lookup_by_name_with_flags_async: starting new lookup for example.com with GTask 0x585d1b89cc20, LookupData 0x585d1b856010
+(process:25554): dconf-DEBUG: 09:12:47.146: watch_established: "/system/proxy/socks/" (establishing: 1)
+(process:25554): GLib-GIO-DEBUG: 09:12:47.157: GSocketClient: Address enumeration succeeded
+(process:25554): GLib-GIO-DEBUG: 09:12:47.157: g_socket_client_enumerator_callback: starting connection attempt 0x585d1b899fd0 for GSocketClientAsyncConnectData 0x585d1b88ed50
+(process:25554): GLib-GIO-DEBUG: 09:12:47.157: GSocketClient: Starting TCP connection attempt
+(process:25554): GLib-GIO-DEBUG: 09:12:47.164: GSocketClient: TCP connection successful
+(process:25554): GLib-GIO-DEBUG: 09:12:47.164: GSocketClient: Starting application layer connection
+(process:25554): GLib-GIO-DEBUG: 09:12:47.164: GSocketClient: Connection successful!
+(process:25554): GLib-GIO-DEBUG: 09:12:47.174: _g_io_module_get_default: Found default implementation gnutls (GTlsBackendGnutls) for ?gio-tls-backend?
+(process:25554): libsoup-http2-DEBUG: 09:12:47.248: [CLIENT] [C1-S0] [-] [SEND] [SETTINGS] stream_id=0
+(process:25554): libsoup-http2-DEBUG: 09:12:47.248: [CLIENT] [C1-S0] [-] [SEND] [WINDOW_UPDATE] stream_id=0
+(process:25554): libsoup-http2-DEBUG: 09:12:47.255: [CLIENT] [C1-S0] [-] [RECV] [SETTINGS] Beginning: stream_id=0
+(process:25554): libsoup-http2-DEBUG: 09:12:47.255: [CLIENT] [C1-S0] [-] [RECV] [SETTINGS] Received: stream_id=0, flags=0
+(process:25554): libsoup-http2-DEBUG: 09:12:47.255: [CLIENT] [C1-S0] [-] [RECV] [WINDOW_UPDATE] Beginning: stream_id=0
+(process:25554): libsoup-http2-DEBUG: 09:12:47.255: [CLIENT] [C1-S0] [-] [RECV] [WINDOW_UPDATE] Received: stream_id=0, flags=0
+(process:25554): libsoup-http2-DEBUG: 09:12:47.255: [CLIENT] [C1-S0] [-] [RECV] WINDOW_UPDATE: increment=2147418112, total=2147483647
+(process:25554): libsoup-http2-DEBUG: 09:12:47.256: [CLIENT] [C1-S0] [-] [SEND] [SETTINGS] stream_id=0
+(process:25554): libsoup-http2-DEBUG: 09:12:47.256: [CLIENT] [C1-S0] [-] [RECV] [SETTINGS] Beginning: stream_id=0
+(process:25554): libsoup-http2-DEBUG: 09:12:47.256: [CLIENT] [C1-S0] [-] [RECV] [SETTINGS] Received: stream_id=0, flags=1
+(process:25555): GLib-GIO-DEBUG: 09:12:47.337: Failed to initialize portal (GPowerProfileMonitorPortal) for gio-power-profile-monitor: Not using portals
+(process:25555): GLib-GIO-DEBUG: 09:12:47.337: _g_io_module_get_default: Found default implementation dbus (GPowerProfileMonitorDBus) for ‘gio-power-profile-monitor’
+(process:25555): GLib-GIO-DEBUG: 09:12:47.337: Using cross-namespace EXTERNAL authentication (this will deadlock if server is GDBus < 2.73.3)
+(process:25555): GLib-GIO-DEBUG: 09:12:47.560: _g_io_module_get_default: Found default implementation gnutls (GTlsBackendGnutls) for ‘gio-tls-backend’
+(kartoffelpure:25525): GLib-GIO-DEBUG: 09:12:47.574: _g_io_module_get_default: Found default implementation gnutls (GTlsBackendGnutls) for ‘gio-tls-backend’
+Gdk-INFO: 09:12:47.705: Vulkan: Loader Message: linux_read_sorted_physical_devices:
+Gdk-INFO: 09:12:47.705: Vulkan: Loader Message:      Original order:
+Gdk-INFO: 09:12:47.705: Vulkan: Loader Message:            [0] llvmpipe (LLVM 20.1.2, 256 bits)
+Gdk-INFO: 09:12:47.705: Vulkan: Loader Message:            [1] Intel(R) Iris(R) Xe Graphics (TGL GT2)
+Gdk-INFO: 09:12:47.705: Vulkan: Loader Message:      Sorted order:
+Gdk-INFO: 09:12:47.705: Vulkan: Loader Message:            [0] Intel(R) Iris(R) Xe Graphics (TGL GT2)  
+Gdk-INFO: 09:12:47.705: Vulkan: Loader Message:            [1] llvmpipe (LLVM 20.1.2, 256 bits)  
+Gdk-INFO: 09:12:47.706: Vulkan: Loader Message: linux_read_sorted_physical_devices:
+Gdk-INFO: 09:12:47.706: Vulkan: Loader Message:      Original order:
+Gdk-INFO: 09:12:47.706: Vulkan: Loader Message:            [0] llvmpipe (LLVM 20.1.2, 256 bits)
+Gdk-INFO: 09:12:47.706: Vulkan: Loader Message:            [1] Intel(R) Iris(R) Xe Graphics (TGL GT2)
+Gdk-INFO: 09:12:47.706: Vulkan: Loader Message:      Sorted order:
+Gdk-INFO: 09:12:47.706: Vulkan: Loader Message:            [0] Intel(R) Iris(R) Xe Graphics (TGL GT2)  
+Gdk-INFO: 09:12:47.706: Vulkan: Loader Message:            [1] llvmpipe (LLVM 20.1.2, 256 bits)  
+(kartoffelpure:25525): Gdk-DEBUG: 09:12:47.706: Vulkan: Loader Message: Copying old device 0 into new device 0
+(kartoffelpure:25525): Gdk-DEBUG: 09:12:47.706: Vulkan: Loader Message: Copying old device 1 into new device 1
+Gdk-INFO: 09:12:47.707: Vulkan: Loader Message: linux_read_sorted_physical_devices:
+Gdk-INFO: 09:12:47.707: Vulkan: Loader Message:      Original order:
+Gdk-INFO: 09:12:47.707: Vulkan: Loader Message:            [0] llvmpipe (LLVM 20.1.2, 256 bits)
+Gdk-INFO: 09:12:47.707: Vulkan: Loader Message:            [1] Intel(R) Iris(R) Xe Graphics (TGL GT2)
+Gdk-INFO: 09:12:47.707: Vulkan: Loader Message:      Sorted order:
+Gdk-INFO: 09:12:47.707: Vulkan: Loader Message:            [0] Intel(R) Iris(R) Xe Graphics (TGL GT2)  
+Gdk-INFO: 09:12:47.707: Vulkan: Loader Message:            [1] llvmpipe (LLVM 20.1.2, 256 bits)  
+(kartoffelpure:25525): Gdk-DEBUG: 09:12:47.707: Vulkan: Loader Message: Copying old device 0 into new device 0
+(kartoffelpure:25525): Gdk-DEBUG: 09:12:47.707: Vulkan: Loader Message: Copying old device 1 into new device 1
+Gdk-INFO: 09:12:47.707: Vulkan: Loader Message: linux_read_sorted_physical_devices:
+Gdk-INFO: 09:12:47.707: Vulkan: Loader Message:      Original order:
+Gdk-INFO: 09:12:47.707: Vulkan: Loader Message:            [0] llvmpipe (LLVM 20.1.2, 256 bits)
+Gdk-INFO: 09:12:47.707: Vulkan: Loader Message:            [1] Intel(R) Iris(R) Xe Graphics (TGL GT2)
+Gdk-INFO: 09:12:47.707: Vulkan: Loader Message:      Sorted order:
+Gdk-INFO: 09:12:47.707: Vulkan: Loader Message:            [0] Intel(R) Iris(R) Xe Graphics (TGL GT2)  
+Gdk-INFO: 09:12:47.707: Vulkan: Loader Message:            [1] llvmpipe (LLVM 20.1.2, 256 bits)  
+(kartoffelpure:25525): Gdk-DEBUG: 09:12:47.707: Vulkan: Loader Message: Copying old device 0 into new device 0
+(kartoffelpure:25525): Gdk-DEBUG: 09:12:47.707: Vulkan: Loader Message: Copying old device 1 into new device 1
+Gdk-INFO: 09:12:47.709: Vulkan: Loader Message: Failed to find vkGetDeviceProcAddr in layer "libVkLayer_MESA_device_select.so"
+Gdk-INFO: 09:12:47.709: Vulkan: Loader Message: vkCreateDevice layer callstack setup to:
+Gdk-INFO: 09:12:47.709: Vulkan: Loader Message:    <Application>
+Gdk-INFO: 09:12:47.709: Vulkan: Loader Message:      ||
+Gdk-INFO: 09:12:47.709: Vulkan: Loader Message:    <Loader>
+Gdk-INFO: 09:12:47.709: Vulkan: Loader Message:      ||
+Gdk-INFO: 09:12:47.709: Vulkan: Loader Message:    <Device>
+Gdk-INFO: 09:12:47.709: Vulkan: Loader Message:        Using "Intel(R) Iris(R) Xe Graphics (TGL GT2)" with driver: "libvulkan_intel.so"
+MESA-INTEL: warning: ../src/intel/vulkan/anv_formats.c:949: FINISHME: support YUV colorspace with DRM format modifiers
+MESA-INTEL: warning: ../src/intel/vulkan/anv_formats.c:981: FINISHME: support more multi-planar formats with DRM modifiers
+(process:25554): libsoup-http2-DEBUG: 09:12:51.707: [CLIENT] [C1-S0] [-] [SEND] [GOAWAY]
+(process:25554): GLib-GIO-DEBUG: 09:12:51.708: g_socket_client_connect_async: starting new g_socket_client_connect_async() with GTask 0x585d1bcb7ca0 and GSocketClientAsyncConnectData 0x585d1c08a7c0
+(process:25554): GLib-GIO-DEBUG: 09:12:51.708: GSocketClient: Starting new address enumeration
+(process:25554): GLib-GIO-DEBUG: 09:12:51.708: GSocketClient: Address enumeration succeeded
+(process:25554): GLib-GIO-DEBUG: 09:12:51.708: g_socket_client_enumerator_callback: starting connection attempt 0x585d1bcb7c40 for GSocketClientAsyncConnectData 0x585d1c08a7c0
+(process:25554): GLib-GIO-DEBUG: 09:12:51.708: GSocketClient: Starting TCP connection attempt
+(process:25554): GLib-GIO-DEBUG: 09:12:51.733: GSocketClient: TCP connection successful
+(process:25554): GLib-GIO-DEBUG: 09:12:51.733: GSocketClient: Starting application layer connection
+(process:25554): GLib-GIO-DEBUG: 09:12:51.733: GSocketClient: Connection successful!
+(process:25554): libsoup-http2-DEBUG: 09:12:51.750: [CLIENT] [C2-S0] [-] [SEND] [SETTINGS] stream_id=0
+(process:25554): libsoup-http2-DEBUG: 09:12:51.750: [CLIENT] [C2-S0] [-] [SEND] [WINDOW_UPDATE] stream_id=0
+(process:25554): libsoup-http2-DEBUG: 09:12:51.750: [CLIENT] [C2-S0] [-] [RECV] [SETTINGS] Beginning: stream_id=0
+(process:25554): libsoup-http2-DEBUG: 09:12:51.750: [CLIENT] [C2-S0] [-] [RECV] [SETTINGS] Received: stream_id=0, flags=0
+(process:25554): libsoup-http2-DEBUG: 09:12:51.750: [CLIENT] [C2-S0] [-] [RECV] [WINDOW_UPDATE] Beginning: stream_id=0
+(process:25554): libsoup-http2-DEBUG: 09:12:51.750: [CLIENT] [C2-S0] [-] [RECV] [WINDOW_UPDATE] Received: stream_id=0, flags=0
+(process:25554): libsoup-http2-DEBUG: 09:12:51.750: [CLIENT] [C2-S0] [-] [RECV] WINDOW_UPDATE: increment=2147418112, total=2147483647
+(process:25554): libsoup-http2-DEBUG: 09:12:51.750: [CLIENT] [C2-S0] [-] [SEND] [SETTINGS] stream_id=0
+(process:25554): libsoup-http2-DEBUG: 09:12:51.754: [CLIENT] [C2-S0] [-] [RECV] [SETTINGS] Beginning: stream_id=0
+(process:25554): libsoup-http2-DEBUG: 09:12:51.754: [CLIENT] [C2-S0] [-] [RECV] [SETTINGS] Received: stream_id=0, flags=1
+(process:25640): GLib-GIO-DEBUG: 09:12:51.774: Failed to initialize portal (GPowerProfileMonitorPortal) for gio-power-profile-monitor: Not using portals
+(process:25640): GLib-GIO-DEBUG: 09:12:51.774: _g_io_module_get_default: Found default implementation dbus (GPowerProfileMonitorDBus) for ‘gio-power-profile-monitor’
+(process:25640): GLib-GIO-DEBUG: 09:12:51.775: Using cross-namespace EXTERNAL authentication (this will deadlock if server is GDBus < 2.73.3)
+(process:25640): GLib-GIO-DEBUG: 09:12:51.941: _g_io_module_get_default: Found default implementation gnutls (GTlsBackendGnutls) for ‘gio-tls-backend’
+(process:25672): GLib-GIO-DEBUG: 09:12:52.023: Failed to initialize portal (GPowerProfileMonitorPortal) for gio-power-profile-monitor: Not using portals
+(process:25672): GLib-GIO-DEBUG: 09:12:52.024: _g_io_module_get_default: Found default implementation dbus (GPowerProfileMonitorDBus) for ‘gio-power-profile-monitor’
+(process:25672): GLib-GIO-DEBUG: 09:12:52.024: Using cross-namespace EXTERNAL authentication (this will deadlock if server is GDBus < 2.73.3)
+(process:25672): GLib-GIO-DEBUG: 09:12:52.191: _g_io_module_get_default: Found default implementation gnutls (GTlsBackendGnutls) for ‘gio-tls-backend’
+(process:25712): GLib-GIO-DEBUG: 09:12:52.987: Failed to initialize portal (GPowerProfileMonitorPortal) for gio-power-profile-monitor: Not using portals
+(process:25712): GLib-GIO-DEBUG: 09:12:52.987: _g_io_module_get_default: Found default implementation dbus (GPowerProfileMonitorDBus) for ‘gio-power-profile-monitor’
+(process:25712): GLib-GIO-DEBUG: 09:12:52.988: Using cross-namespace EXTERNAL authentication (this will deadlock if server is GDBus < 2.73.3)
+(process:25712): GLib-GIO-DEBUG: 09:12:53.168: _g_io_module_get_default: Found default implementation gnutls (GTlsBackendGnutls) for ‘gio-tls-backend’
+(process:25749): GLib-GIO-DEBUG: 09:12:53.690: Failed to initialize portal (GPowerProfileMonitorPortal) for gio-power-profile-monitor: Not using portals
+(process:25749): GLib-GIO-DEBUG: 09:12:53.690: _g_io_module_get_default: Found default implementation dbus (GPowerProfileMonitorDBus) for ‘gio-power-profile-monitor’
+(process:25749): GLib-GIO-DEBUG: 09:12:53.691: Using cross-namespace EXTERNAL authentication (this will deadlock if server is GDBus < 2.73.3)
+(process:25749): GLib-GIO-DEBUG: 09:12:53.852: _g_io_module_get_default: Found default implementation gnutls (GTlsBackendGnutls) for ‘gio-tls-backend’
+(process:25781): GLib-GIO-DEBUG: 09:12:54.026: Failed to initialize portal (GPowerProfileMonitorPortal) for gio-power-profile-monitor: Not using portals
+(process:25781): GLib-GIO-DEBUG: 09:12:54.026: _g_io_module_get_default: Found default implementation dbus (GPowerProfileMonitorDBus) for ‘gio-power-profile-monitor’
+(process:25781): GLib-GIO-DEBUG: 09:12:54.026: Using cross-namespace EXTERNAL authentication (this will deadlock if server is GDBus < 2.73.3)
+(process:25781): GLib-GIO-DEBUG: 09:12:54.211: _g_io_module_get_default: Found default implementation gnutls (GTlsBackendGnutls) for ‘gio-tls-backend’
+(process:25826): GLib-GIO-DEBUG: 09:12:54.412: Failed to initialize portal (GPowerProfileMonitorPortal) for gio-power-profile-monitor: Not using portals
+(process:25826): GLib-GIO-DEBUG: 09:12:54.412: _g_io_module_get_default: Found default implementation dbus (GPowerProfileMonitorDBus) for ‘gio-power-profile-monitor’
+(process:25826): GLib-GIO-DEBUG: 09:12:54.412: Using cross-namespace EXTERNAL authentication (this will deadlock if server is GDBus < 2.73.3)
+(process:25826): GLib-GIO-DEBUG: 09:12:54.580: _g_io_module_get_default: Found default implementation gnutls (GTlsBackendGnutls) for ‘gio-tls-backend’
+(process:25858): GLib-GIO-DEBUG: 09:12:54.831: Failed to initialize portal (GPowerProfileMonitorPortal) for gio-power-profile-monitor: Not using portals
+(process:25858): GLib-GIO-DEBUG: 09:12:54.831: _g_io_module_get_default: Found default implementation dbus (GPowerProfileMonitorDBus) for ‘gio-power-profile-monitor’
+(process:25858): GLib-GIO-DEBUG: 09:12:54.831: Using cross-namespace EXTERNAL authentication (this will deadlock if server is GDBus < 2.73.3)
+(process:25858): GLib-GIO-DEBUG: 09:12:54.994: _g_io_module_get_default: Found default implementation gnutls (GTlsBackendGnutls) for ‘gio-tls-backend’
+(process:25554): libsoup-http2-DEBUG: 09:12:55.425: [CLIENT] [C2-S0] [-] [SEND] [GOAWAY]
+(process:25554): GLib-GIO-DEBUG: 09:12:55.425: g_socket_client_connect_async: starting new g_socket_client_connect_async() with GTask 0x585d1bcb7d90 and GSocketClientAsyncConnectData 0x585d1bcdf290
+(process:25554): GLib-GIO-DEBUG: 09:12:55.425: GSocketClient: Starting new address enumeration
+(process:25554): GLib-GIO-DEBUG: 09:12:55.425: GSocketClient: Address enumeration succeeded
+(process:25554): GLib-GIO-DEBUG: 09:12:55.425: g_socket_client_enumerator_callback: starting connection attempt 0x585d1c089180 for GSocketClientAsyncConnectData 0x585d1bcdf290
+(process:25554): GLib-GIO-DEBUG: 09:12:55.425: GSocketClient: Starting TCP connection attempt
+(process:25554): GLib-GIO-DEBUG: 09:12:55.434: GSocketClient: TCP connection successful
+(process:25554): GLib-GIO-DEBUG: 09:12:55.434: GSocketClient: Starting application layer connection
+(process:25554): GLib-GIO-DEBUG: 09:12:55.434: GSocketClient: Connection successful!
+(process:25554): libsoup-http2-DEBUG: 09:12:55.478: [CLIENT] [C3-S0] [-] [SEND] [SETTINGS] stream_id=0
+(process:25554): libsoup-http2-DEBUG: 09:12:55.478: [CLIENT] [C3-S0] [-] [SEND] [WINDOW_UPDATE] stream_id=0
+(process:25554): libsoup-http2-DEBUG: 09:12:55.478: [CLIENT] [C3-S0] [-] [RECV] [SETTINGS] Beginning: stream_id=0
+(process:25554): libsoup-http2-DEBUG: 09:12:55.478: [CLIENT] [C3-S0] [-] [RECV] [SETTINGS] Received: stream_id=0, flags=0
+(process:25554): libsoup-http2-DEBUG: 09:12:55.478: [CLIENT] [C3-S0] [-] [RECV] [WINDOW_UPDATE] Beginning: stream_id=0
+(process:25554): libsoup-http2-DEBUG: 09:12:55.478: [CLIENT] [C3-S0] [-] [RECV] [WINDOW_UPDATE] Received: stream_id=0, flags=0
+(process:25554): libsoup-http2-DEBUG: 09:12:55.478: [CLIENT] [C3-S0] [-] [RECV] WINDOW_UPDATE: increment=2147418112, total=2147483647
+(process:25554): libsoup-http2-DEBUG: 09:12:55.478: [CLIENT] [C3-S0] [-] [SEND] [SETTINGS] stream_id=0
+(process:25554): libsoup-http2-DEBUG: 09:12:55.485: [CLIENT] [C3-S0] [-] [RECV] [SETTINGS] Beginning: stream_id=0
+(process:25554): libsoup-http2-DEBUG: 09:12:55.485: [CLIENT] [C3-S0] [-] [RECV] [SETTINGS] Received: stream_id=0, flags=1
+(process:25901): GLib-GIO-DEBUG: 09:12:55.564: Failed to initialize portal (GPowerProfileMonitorPortal) for gio-power-profile-monitor: Not using portals
+(process:25901): GLib-GIO-DEBUG: 09:12:55.564: _g_io_module_get_default: Found default implementation dbus (GPowerProfileMonitorDBus) for ‘gio-power-profile-monitor’
+(process:25901): GLib-GIO-DEBUG: 09:12:55.565: Using cross-namespace EXTERNAL authentication (this will deadlock if server is GDBus < 2.73.3)
+(process:25901): GLib-GIO-DEBUG: 09:12:55.752: _g_io_module_get_default: Found default implementation gnutls (GTlsBackendGnutls) for ‘gio-tls-backend’
+(kartoffelpure:25525): Gtk-DEBUG: 09:12:59.807: snapshot symbolic icon using mask
+(kartoffelpure:25525): Gtk-DEBUG: 09:12:59.807: snapshot symbolic icon using mask
+(kartoffelpure:25525): Gtk-DEBUG: 09:12:59.807: snapshot symbolic icon using mask
+(kartoffelpure:25525): Gtk-DEBUG: 09:12:59.839: snapshot symbolic icon using mask
+(kartoffelpure:25525): Gtk-DEBUG: 09:12:59.839: snapshot symbolic icon using mask
+(kartoffelpure:25525): Gtk-DEBUG: 09:12:59.839: snapshot symbolic icon using mask
+(kartoffelpure:25525): Gtk-DEBUG: 09:12:59.851: snapshot symbolic icon using mask
+(kartoffelpure:25525): Gtk-DEBUG: 09:12:59.851: snapshot symbolic icon using mask
+(kartoffelpure:25525): Gtk-DEBUG: 09:12:59.851: snapshot symbolic icon using mask
+(kartoffelpure:25525): Gtk-DEBUG: 09:12:59.885: snapshot symbolic icon using mask
+(kartoffelpure:25525): Gtk-DEBUG: 09:12:59.885: snapshot symbolic icon using mask
+(kartoffelpure:25525): Gtk-DEBUG: 09:12:59.885: snapshot symbolic icon using mask
+(kartoffelpure:25525): Gtk-DEBUG: 09:12:59.900: snapshot symbolic icon using mask
+(kartoffelpure:25525): Gtk-DEBUG: 09:12:59.900: snapshot symbolic icon using mask
+(kartoffelpure:25525): Gtk-DEBUG: 09:12:59.900: snapshot symbolic icon using mask
+(kartoffelpure:25525): Gtk-DEBUG: 09:12:59.917: snapshot symbolic icon using mask
+(kartoffelpure:25525): Gtk-DEBUG: 09:12:59.917: snapshot symbolic icon using mask
+(kartoffelpure:25525): Gtk-DEBUG: 09:12:59.917: snapshot symbolic icon using mask
+(kartoffelpure:25525): Gtk-DEBUG: 09:12:59.934: snapshot symbolic icon using mask
+(kartoffelpure:25525): Gtk-DEBUG: 09:12:59.934: snapshot symbolic icon using mask
+(kartoffelpure:25525): Gtk-DEBUG: 09:12:59.934: snapshot symbolic icon using mask
+(kartoffelpure:25525): Gtk-DEBUG: 09:12:59.951: snapshot symbolic icon using mask
+(kartoffelpure:25525): Gtk-DEBUG: 09:12:59.951: snapshot symbolic icon using mask
+(kartoffelpure:25525): Gtk-DEBUG: 09:12:59.951: snapshot symbolic icon using mask
+(kartoffelpure:25525): Gtk-DEBUG: 09:12:59.967: snapshot symbolic icon using mask
+(kartoffelpure:25525): Gtk-DEBUG: 09:12:59.967: snapshot symbolic icon using mask
+(kartoffelpure:25525): Gtk-DEBUG: 09:12:59.967: snapshot symbolic icon using mask
+(kartoffelpure:25525): Gtk-DEBUG: 09:12:59.985: snapshot symbolic icon using mask
+(kartoffelpure:25525): Gtk-DEBUG: 09:12:59.985: snapshot symbolic icon using mask
+(kartoffelpure:25525): Gtk-DEBUG: 09:12:59.985: snapshot symbolic icon using mask
+(kartoffelpure:25525): Gtk-DEBUG: 09:13:00.001: snapshot symbolic icon using mask
+(kartoffelpure:25525): Gtk-DEBUG: 09:13:00.001: snapshot symbolic icon using mask
+(kartoffelpure:25525): Gtk-DEBUG: 09:13:00.001: snapshot symbolic icon using mask
+(process:25554): libsoup-http2-DEBUG: 09:13:55.487: [CLIENT] [C3-S0] [-] [SEND] [GOAWAY]
+(kartoffelpure:25525): Gtk-DEBUG: 09:21:38.532: snapshot symbolic icon using mask
+(kartoffelpure:25525): Gtk-DEBUG: 09:21:38.533: snapshot symbolic icon using mask
+(kartoffelpure:25525): Gtk-DEBUG: 09:21:38.539: snapshot symbolic icon using mask
+(kartoffelpure:25525): Gtk-DEBUG: 09:21:38.553: snapshot symbolic icon using mask
+(kartoffelpure:25525): Gtk-DEBUG: 09:21:38.571: snapshot symbolic icon using mask
+(kartoffelpure:25525): Gtk-DEBUG: 09:21:38.604: snapshot symbolic icon using mask
+(kartoffelpure:25525): Gtk-DEBUG: 09:21:38.617: snapshot symbolic icon using mask
+(kartoffelpure:25525): Gtk-DEBUG: 09:21:38.648: snapshot symbolic icon using mask
+(kartoffelpure:25525): Gtk-DEBUG: 09:21:38.662: snapshot symbolic icon using mask
+(kartoffelpure:25525): Gtk-DEBUG: 09:21:38.679: snapshot symbolic icon using mask
+(kartoffelpure:25525): dconf-DEBUG: 09:21:38.720: sync

@@ -1,7 +1,7 @@
 //! WebKit `WebView` wrapper for a single browsing surface.
 
-use webkit6::prelude::*;
 use webkit6::WebView;
+use webkit6::prelude::*;
 
 /// Default page loaded on startup.
 pub const DEFAULT_HOME_URL: &str = "https://example.com";
@@ -11,15 +11,16 @@ pub struct BrowserView {
     webview: WebView,
 }
 
-impl BrowserView {
-    /// Creates a new web view ready to load pages.
-    pub fn new() -> Self {
+impl Default for BrowserView {
+    fn default() -> Self {
         let webview = WebView::new();
         webview.set_hexpand(true);
         webview.set_vexpand(true);
         Self { webview }
     }
+}
 
+impl BrowserView {
     /// Returns the underlying GTK widget.
     pub fn widget(&self) -> &WebView {
         &self.webview
@@ -63,7 +64,6 @@ impl BrowserView {
     pub fn can_go_forward(&self) -> bool {
         self.webview.can_go_forward()
     }
-
 }
 
 /// Turns user input into a loadable URI string.
@@ -93,10 +93,7 @@ mod tests {
 
     #[test]
     fn normalize_preserves_scheme() {
-        assert_eq!(
-            normalize_url("http://example.org"),
-            "http://example.org"
-        );
+        assert_eq!(normalize_url("http://example.org"), "http://example.org");
     }
 
     #[test]
